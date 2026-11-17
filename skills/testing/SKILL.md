@@ -5,7 +5,7 @@ description: Conventions for writing tests in any language. Use whenever you rea
 
 # Testing
 
-Every rule here is language and test suite neutral. Translate it into the project's language, test suite, assertion library, and file layout before applying it. Examples are pseudo-code.
+Every rule here is language and test suite neutral. The project's own test rules come first, and this skill fills what they leave open. Translate it into the project's language, test suite, assertion library, and file layout before applying it. Examples are pseudo-code.
 
 ## 1. Read a sample of the project's tests
 
@@ -38,7 +38,7 @@ A helper may move to the nearest enclosing group when three things hold at once.
 
 ### Deterministic
 
-A test gives the same result on every run, on every machine, until the code under test changes. Two things break that.
+A test gives the same result on every run, on every machine, until the code under test changes. Three things break that.
 
 Inputs the code reads from the outside. The clock, random values, environment variables. The test fixes every one of them inside its body, so nothing comes from wherever the test happens to run.
 
@@ -60,6 +60,17 @@ test "returns every active user when two users are active"
 ```
 
 A plain == on the unsorted list passes on some runs and fails on others.
+
+Waits on a fixed delay. When the code finishes its work in the background, the test waits on the signal that marks it done, such as an awaited promise, an event, or an item it takes from a queue. Timers the code sets run on the suite's fake clock, which the test advances.
+
+```
+test "sends the reminder when the job runs"
+  done = startReminderJob()
+  await done
+  expect sentReminders() == [Reminder(userId: 1)]
+```
+
+With sleep(100) in place of await done, this test passes on a laptop and fails on a loaded CI runner.
 
 ### Group by the code's structure
 
