@@ -1,7 +1,8 @@
 // Collects the review comments on a pull request that still need triage, and replies to and reacts on them.
 //
 // A comment needs triage until it carries the viewer's ROCKET reaction. `collect` prints those comments as JSON,
-// `reply` posts an answer and adds the ROCKET, `react` adds only the ROCKET. All GitHub access goes through `gh`.
+// `history` prints every review with the commit it saw and every thread, `reply` posts an answer and adds the ROCKET,
+// `react` adds only the ROCKET. All GitHub access goes through `gh`.
 
 import { execFileSync } from "node:child_process"
 import { readFileSync } from "node:fs"
@@ -28,7 +29,7 @@ type Thread = {
 class Failure extends Error {}
 
 const commentFields = "id url body author { __typename login } viewerDidAuthor reactionGroups { content viewerHasReacted }"
-const usage = "usage: node pr-comments.ts collect [pr] | reply <id> < body.md | react <id>"
+const usage = "usage: node pr-comments.ts collect [pr] | history [pr] | reply <id> < body.md | react <id>"
 
 function gh(args: string[]) {
   try {
@@ -114,6 +115,34 @@ function collect(pullRequest?: string) {
   console.log(JSON.stringify([...threads, ...reviews, ...conversation], null, 2))
 }
 
+// Later rounds of review judge new comments against what earlier rounds asked for and the code each round saw.
+function history(pullRequest?: string) {
+  const pullRequestId = gh(["pr", "view", ...(pullRequest ? [pullRequest] : []), "--json", "id", "--jq", ".id"]).trim()
+
+  const reviews = getConnection<Commented & { submittedAt: string | null; commit: { oid: string } | null }>(
+    pullRequestId,
+    "PullRequest",
+    "reviews",
+    `${commentFields} submittedAt commit { oid }`,
+  ).map((review) => ({
+    id: review.id,
+    ...toAuthor(review.author),
+    commit: review.commit?.oid ?? null,
+    submittedAt: review.submittedAt,
+    url: review.url,
+    body: review.body,
+  }))
+  const threads = getThreads(pullRequestId).map((thread) => ({
+    path: thread.path,
+    line: thread.line,
+    outdated: thread.isOutdated,
+    resolved: thread.isResolved,
+    comments: thread.comments.map((comment) => ({ id: comment.id, ...toAuthor(comment.author), url: comment.url, body: comment.body })),
+  }))
+
+  console.log(JSON.stringify({ reviews, threads }, null, 2))
+}
+
 function react(subjectId: string) {
   graphql(
     "mutation($subject: ID!) { addReaction(input: { subjectId: $subject, content: ROCKET }) { clientMutationId } }",
@@ -174,6 +203,7 @@ function reply(commentId: string) {
 const [command, argument] = process.argv.slice(2)
 try {
   if (command === "collect") collect(argument)
+  else if (command === "history") history(argument)
   else if (command === "reply" && argument) reply(argument)
   else if (command === "react" && argument) react(argument)
   else {

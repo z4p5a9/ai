@@ -6,7 +6,7 @@ Make the fixes, each with the remedy from the report. Change only what the fix n
 
 When the investigator showed the bug with a run, turn that run into a test if the project tests that kind of thing. Watch it fail before the fix and pass after.
 
-Run the project's checks and fix what they report. Commit each fix on its own, so its reply can link to the commit, then push.
+Run the project's checks and fix what they report. Commit each fix on its own with the `commit-message` skill, so its reply can link to the commit, then push.
 
 Done when every fix is pushed and the checks pass.
 
@@ -19,6 +19,8 @@ Fixed in a1b2c3d. `decodeKey` now rejects keys longer than 16 bytes.
 Not changing this. `id` is a `DocumentId`, so it can't be undefined here.
 Not changing this. Only one process writes this table, so the two writes can't overlap.
 Real, but outside this PR, which only changes how values are encoded.
+Not changing this back. The earlier review asked for this version in <link to that thread>.
+Not changing this here. The code was the same when the first review looked, and it doesn't break what this PR promises.
 ```
 
 An inline thread gets one reply. A review body gets one PR comment that answers each of its findings on its own line, in the order the review listed them. A notice gets no reply. Don't @mention a bot, because a mention starts it again.
