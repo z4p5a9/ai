@@ -36,7 +36,7 @@ Every verdict carries its evidence:
 
 ```
 verdict   fix, decline, defer or ask
-reason    the check that decided it, with the evidence: path:line, a command and its output, or the fact only I know
+reason    the check that decided it, with the evidence, such as path:line, a command and its output, or the fact only I know
 remedy    for a fix, the smallest change at the layer that owns the cause
 ```
 
@@ -46,8 +46,8 @@ A second or later round of review on the same change adds two checks after the f
 
 | Check | Passes when | Fails on |
 |---|---|---|
-| Settled | the finding keeps what an earlier round asked for and the author did | a flip-flop: asking to undo an earlier fix, or reversing an earlier finding |
-| New | the code it describes changed since an earlier round reviewed it | moving the goalposts: a finding on code that was there, unchanged, when an earlier round looked |
+| Settled | the finding keeps what an earlier round asked for and the author did | a flip-flop, such as asking to undo an earlier fix or reversing an earlier finding |
+| New | the code it describes changed since an earlier round reviewed it | moving the goalposts, such as a finding on code that was there, unchanged, when an earlier round looked |
 
 - A flip-flop is a decline. When the earlier finding itself was wrong, it is an ask instead, because reversing it costs the author another round.
 - Moving the goalposts is a decline, unless the finding breaks a behaviour the change promised or something that worked before the change. Then it keeps its verdict, and its reason says an earlier round missed it.
