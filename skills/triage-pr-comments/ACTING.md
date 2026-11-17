@@ -12,7 +12,7 @@ Done when every fix is pushed and the checks pass.
 
 ## 2. Reply
 
-Every finding gets a reply in your own plain words, like these:
+Every finding gets a reply written with the `alkis-github-voice` skill, like these:
 
 ```
 Fixed in a1b2c3d. `decodeKey` now rejects keys longer than 16 bytes.
