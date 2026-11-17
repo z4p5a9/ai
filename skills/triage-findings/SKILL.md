@@ -40,6 +40,18 @@ reason    the check that decided it, with the evidence: path:line, a command and
 remedy    for a fix, the smallest change at the layer that owns the cause
 ```
 
+## Later rounds
+
+A second or later round of review on the same change adds two checks after the funnel. They need the earlier rounds' findings and the commit each round reviewed. GitHub records that commit as each review's `commit_id`.
+
+| Check | Passes when | Fails on |
+|---|---|---|
+| Settled | the finding keeps what an earlier round asked for and the author did | a flip-flop: asking to undo an earlier fix, or reversing an earlier finding |
+| New | the code it describes changed since an earlier round reviewed it | moving the goalposts: a finding on code that was there, unchanged, when an earlier round looked |
+
+- A flip-flop is a decline. When the earlier finding itself was wrong, it is an ask instead, because reversing it costs the author another round.
+- Moving the goalposts is a decline, unless the finding breaks a behaviour the change promised or something that worked before the change. Then it keeps its verdict, and its reason says an earlier round missed it.
+
 ## Remedies
 
 The remedy for a fix is yours, not the reviewer's. Fix the cause at the layer that owns it. A type that makes the bad state impossible beats a runtime check, and an error that stays loud beats a fallback that hides it.
