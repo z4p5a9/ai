@@ -5,7 +5,7 @@ description: Conventions for writing custom oxlint rules in a JS plugin. Use whe
 
 # Oxlint rule
 
-Every rule is **portable**: it runs in another project, with other paths, packages, build setups, module systems, and runtimes, by changing only its config. Rules get copied between projects, so anything tied to one repository is a bug.
+Every rule is **portable**. It runs in another project, with other paths, packages, build setups, module systems, and runtimes, by changing only its config. Rules get copied between projects, so anything tied to one repository is a bug.
 
 The installed `@oxlint/plugins` (`index.d.ts`) and `oxlint/plugins-dev` are the authoritative API for the pinned version. JS plugins are alpha and outside semver, so check them before relying on anything in `references/api.md`. The `coding`, `commenting`, and `testing` skills apply alongside this one.
 
@@ -19,21 +19,21 @@ Done when you can name what covers the check, or name why each of them falls sho
 
 ### 2. Pin down the concern
 
-A rule has **one concern**: one thing it reports, so a project can turn it off without losing anything else. Write the code it reports and the code it accepts before writing the rule, including the near misses:
+A rule has **one concern**, one thing it reports, so a project can turn it off without losing anything else. Write the code it reports and the code it accepts before writing the rule, including the near misses:
 
 - a local binding that shadows the name the rule looks for, like a parameter named `it` or a local `pipe`
 - the construct reached through an aliased import, a namespace import, and a subpath import of the library
 - the construct wrapped in parentheses, `as`, `satisfies`, or `!`
 - a union nested inside a union, or wrapped in parentheses
 - every member of the API family, like each fork variant or each `fn` variant, not only the common one
-- every declaration form of the thing: declaration and expression, class member and parameter property, type alias and interface, function and signature
+- every declaration form of the thing, including declaration and expression, class member and parameter property, type alias and interface, function and signature
 - comments inside the code a fix replaces
 
 Done when every case is a concrete snippet marked reported or accepted, and each reported one has the message it gets.
 
 ### 3. Write and test it
 
-Follow the sections below: layout, naming, the rule body, options, messages, fixes, portability, and testing.
+Follow the sections below, on layout, naming, the rule body, options, messages, fixes, portability, and testing.
 
 Done when every case from step 2 is a test case, every messageId, option, fix, and suggestion has one, and the tests pass.
 
@@ -78,7 +78,7 @@ A rule id is kebab-case. Its family and the verb opening `meta.docs.description`
 | `<thing>-order` | a sequence out of order | Enforce |
 | `padding-<where>` | missing or extra blank lines | Require |
 
-The description is one sentence that names exactly what the rule reports: `Disallow Effect.sleep inside a loop of an Effect generator.`
+The description is one sentence that names exactly what the rule reports, such as `Disallow Effect.sleep inside a loop of an Effect generator.`
 
 ## Rule body
 
@@ -130,7 +130,7 @@ export const consistentSiblingImportRule = defineRule({
 
 ## Options
 
-A rule takes options when a value it checks against, writes, or names differs between projects: paths, prefixes, extensions, package names, allowed names, words. The concern itself is never an option.
+A rule takes options when a value it checks against, writes, or names differs between projects, such as paths, prefixes, extensions, package names, allowed names and words. The concern itself is never an option.
 
 - One object option. Every property has a `description` and a default in `meta.defaultOptions`, never a schema `default`. `additionalProperties: false`.
 - Read it as a typed `Options` from `context.options[0]`, as in the rule body above. oxlint has already validated it against the schema, merged the defaults under it, and frozen it, so the rule narrows nothing by hand.
@@ -154,7 +154,7 @@ A reason fits in a clause when the fix alone would look arbitrary. A message nam
 
 ## Fixes and suggestions
 
-- A **fix** rewrites code when the result behaves the same and there is exactly one right answer: a key, a path, an import form, whitespace. `oxlint --fix` applies it. Set `meta.fixable` to `"code"`, or `"whitespace"` for layout rules.
+- A **fix** rewrites code when the result behaves the same and there is exactly one right answer, such as a key, a path, an import form or whitespace. `oxlint --fix` applies it. Set `meta.fixable` to `"code"`, or `"whitespace"` for layout rules.
 - A **suggestion** offers a rewrite that may change behavior, or one of several valid rewrites. `oxlint --fix-suggestions` applies it. Set `meta.hasSuggestions: true`, and give each suggestion its own messageId that says what it does.
 - Report without either when the right code depends on intent.
 
@@ -190,11 +190,11 @@ tester.run("consistent-sibling-import", consistentSiblingImportRule, {
 });
 ```
 
-- Every case has a `name` that opens with what the rule does: "accepts", "ignores", "reports", "rewrites", "suggests".
+- Every case has a `name` that opens with what the rule does, one of "accepts", "ignores", "reports", "rewrites" or "suggests".
 - Every invalid case asserts `messageId` and `data`. A reported case the rule does not fix has `output: null`. A suggestion is asserted with `suggestions: [{ messageId, output }]`.
-- Names and paths are neutral: `@acme/core`, `/repo/src/view/View.ts`.
+- Names and paths are neutral, such as `@acme/core` and `/repo/src/view/View.ts`.
 - A rule that reads the filesystem is tested against `fixtures/<rule-id>/`.
 
 ## References
 
-- The context, source code, fixer, options merge, RuleTester behavior, or config and loading details: read `references/api.md`.
+- For the context, source code, fixer, options merge, RuleTester behavior, or config and loading details, read `references/api.md`.

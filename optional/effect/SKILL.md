@@ -26,7 +26,7 @@ If the `effect` package is installed, its source is the authoritative reference 
 - Build a value with `schema.makeEffect(...)` when the input may be invalid. `schema.make(...)` throws, so use it only on trusted input.
 - A plain function that can fail returns `Result`. Write it with `Result.gen` when more than one branch can fail.
 - Model internal variants with `Data.TaggedEnum` and dispatch with `$match`. Model variants that cross a boundary with `Schema.TaggedUnion` and dispatch with `.match`.
-- Keep mutable state shared across fibers in the Effect primitive that matches its semantics: `Ref`, `Deferred`, `Semaphore`. Keep fiber-local control state in ordinary locals.
+- Keep mutable state shared across fibers in the Effect primitive that matches its semantics, such as `Ref`, `Deferred` or `Semaphore`. Keep fiber-local control state in ordinary locals.
 - Use `Schedule` for retry, repeat, and polling instead of loops with sleeps.
 - Use `Stream` for a source that emits many values over time.
 - Fork long-lived background work into its owning scope with `Effect.forkScoped`, so layer acquisition completes.
@@ -35,12 +35,12 @@ If the `effect` package is installed, its source is the authoritative reference 
 
 Read only the references that match the task. When a task spans several, read all of them before editing.
 
-- Effect functions, generators, pipelines, `yield*`, or `Effect.fn` transforms: read `references/functions.md`.
-- Services, layers, runtime wiring, or config reading: read `references/services.md`.
-- Files, directories, barrels, or imports: read `references/modules.md`.
-- Error classes, error unions, error translation, causes, or absence handling: read `references/errors.md`.
-- Data models, schemas, brands, variants, optional keys, or decoders: read `references/schema.md`.
-- Effect tests, time, fakes, test layers, or test config: read `references/testing.md`.
-- Fibers, forking, scopes, interruption, or shared state: read `references/concurrency.md`.
-- Streams, event sources, queues, pubsubs, pagination, or stream consumers: read `references/streams.md`.
-- Retry, repeat, polling, backoff, jitter, or timeouts: read `references/scheduling.md`.
+- For Effect functions, generators, pipelines, `yield*`, or `Effect.fn` transforms, read `references/functions.md`.
+- For services, layers, runtime wiring, or config reading, read `references/services.md`.
+- For files, directories, barrels, or imports, read `references/modules.md`.
+- For error classes, error unions, error translation, causes, or absence handling, read `references/errors.md`.
+- For data models, schemas, brands, variants, optional keys, or decoders, read `references/schema.md`.
+- For Effect tests, time, fakes, test layers, or test config, read `references/testing.md`.
+- For fibers, forking, scopes, interruption, or shared state, read `references/concurrency.md`.
+- For streams, event sources, queues, pubsubs, pagination, or stream consumers, read `references/streams.md`.
+- For retry, repeat, polling, backoff, jitter, or timeouts, read `references/scheduling.md`.

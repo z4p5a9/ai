@@ -103,7 +103,7 @@ export class WriteLog extends Context.Service<WriteLog>()("@app/WriteLog", { mak
 export const layer = Layer.effect(WriteLog, make);
 ```
 
-Each field uses the `Config` constructor that matches its meaning: `Config.duration` for time, `Config.int` for counts and sizes, `Config.port` for ports, `Config.boolean` for switches, `Config.redacted` for secrets, `Config.schema` for a value with its own schema. `Config.withDefault` carries the production value and applies only when the key is absent. A malformed value still fails. `Config.option` when absence means something. `Config.orElse` only when every failure, malformed included, should fall through.
+Each field uses the `Config` constructor that matches its meaning. `Config.duration` is for time, `Config.int` for counts and sizes, `Config.port` for ports, `Config.boolean` for switches, `Config.redacted` for secrets, and `Config.schema` for a value with its own schema. `Config.withDefault` carries the production value and applies only when the key is absent. A malformed value still fails. `Config.option` when absence means something. `Config.orElse` only when every failure, malformed included, should fall through.
 
 A library layer that offers `layerConfig` takes `Config` values directly, as in `MysqlClient.layerConfig({ host: Config.string("MYSQL_HOST"), password: Config.redacted("MYSQL_PASSWORD") })`.
 

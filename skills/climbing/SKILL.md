@@ -13,7 +13,7 @@ A climb improves one thing in rounds until it reaches the bar. It measures where
 State these back to the user:
 
 - The goal, and what may change to reach it.
-- The scope, meaning what judges review and what they leave out, such as "the public surface: exports, names, signatures, types, errors and docs, not the implementation".
+- The scope, meaning what judges review and what they leave out, such as "the public surface, meaning exports, names, signatures, types, errors and docs, not the implementation".
 - The principles, if any. A principle is a rule from the user that the work follows and judges score against, such as "no `Type` suffix on names".
 - The measures. A measure is a command that prints a number, or a quality judges score from 1 to 10 in steps of 0.1. Each judged measure gets one line for each of 1, 4, 7 and 10.
 - The bar, in the user's terms, such as "a panel mean of 9 on every measure" or "p50 under 5ms".
@@ -28,7 +28,7 @@ Run round after round without waiting for the user. End a turn only to wait for 
 
 The first measure runs on the thing as it is, before any change.
 
-Run every command measure every round, and report only numbers you measured. For judged measures, start one new `delegate_task` per judge, all at once, with `role: "review"`, and hold your edits until they return. Judges get the thing, its scope, the principles, the measures with their levels, the declined findings with the reason for each, and these instructions: stay read-only, score the thing on every measure, and for every score below the top say where the problem is and what would raise it. A declined finding comes back only with a reason its decline didn't consider. The brief changes between rounds only in its declined list. The bar, the round number, and earlier scores stay with you.
+Run every command measure every round, and report only numbers you measured. For judged measures, start one new `delegate_task` per judge, all at once, with `role: "review"`, and hold your edits until they return. Judges get the thing, its scope, the principles, the measures with their levels, the declined findings with the reason for each, and the instruction to stay read-only, score the thing on every measure, and for every score below the top say where the problem is and what would raise it. A declined finding comes back only with a reason its decline didn't consider. The brief changes between rounds only in its declined list. The bar, the round number, and earlier scores stay with you.
 
 A judge that returns nothing gets one fresh retry, then counts as `no score`. A panel member that is unavailable stops the climb, and you report it.
 

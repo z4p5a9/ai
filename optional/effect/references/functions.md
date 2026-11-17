@@ -16,7 +16,7 @@ A public service method keeps `Effect.fn("Module.foo")` even when its body has n
 
 ## Transforms
 
-Arguments after the generator function are transforms. Each receives the effect built so far and the original arguments, `(effect, ...args)`, and returns the next effect. Anything that applies to the whole call goes there and the body stays plain: translating errors, recovering locally, annotating logs, retrying, timing out, taking a permit, running uninterruptibly, ensuring cleanup, mapping the result.
+Arguments after the generator function are transforms. Each receives the effect built so far and the original arguments, `(effect, ...args)`, and returns the next effect. Anything that applies to the whole call goes there, such as translating errors, recovering locally, annotating logs, retrying, timing out, taking a permit, running uninterruptibly, ensuring cleanup or mapping the result, and the body stays plain.
 
 Order transforms from the operation's own error handling outward to how it runs, so `catchTag` comes before `withPermits`, which comes before `uninterruptible`. One or two transforms is the normal case.
 
@@ -40,7 +40,7 @@ const cancel = Effect.fn("Job.cancel")(
 
 ## Getting values out of effects
 
-Take the value with `yield*` on its own line and work on it in plain code. `.pipe` on an effect is for changing how that effect runs or fails: retrying, timing out, catching, providing.
+Take the value with `yield*` on its own line and work on it in plain code. `.pipe` on an effect is for changing how that effect runs or fails, such as retrying, timing out, catching or providing.
 
 ```ts
 const entries = yield* read(cursor);
@@ -51,7 +51,7 @@ const names = entries.map(toName);
 
 An `Effect.gen` inside another function is a smell. Steps that belong to the current function are written in it with `yield*`, and a step with a name of its own is its own `Effect.fn`. Flatten a nested `Effect.gen` wherever removing it leaves the outer function reading straight down.
 
-An inner effect belongs only where an API takes an Effect as a value and that effect has more than one step: the body of `sql.withTransaction`, `Effect.uninterruptibleMask`, `Stream.paginate`, `Effect.forkScoped`, or a finalizer. A single step is passed directly. When the inner effect is substantial, build it as a named local and hand that in, instead of extracting a function just to shorten the call.
+An inner effect belongs only where an API takes an Effect as a value and that effect has more than one step, such as the body of `sql.withTransaction`, `Effect.uninterruptibleMask`, `Stream.paginate`, `Effect.forkScoped`, or a finalizer. A single step is passed directly. When the inner effect is substantial, build it as a named local and hand that in, instead of extracting a function just to shorten the call.
 
 ```ts
 const backfill = Effect.gen(function* () {
