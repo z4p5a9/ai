@@ -1,6 +1,6 @@
 ---
 name: commenting
-description: Where comments go and how to write them, in any language. Use whenever you write or edit a comment, doc block, or module header.
+description: Where comments go and how to write them, in any language. Use whenever you write or edit a comment, doc block, or module header, or change code that carries one.
 ---
 
 # Commenting
@@ -9,7 +9,9 @@ Comments live in two places, the module header and the doc block on an exported 
 
 When code seems to need a comment, the code is the problem. Code that needs a comment to say what it does is unclear. Code that needs a comment to justify what it does goes against the project. Rewrite either until it reads without the comment. When you change code that already carries such a comment, the rewrite removes it.
 
-Done when every comment in your change is a module header or a doc block on an exported symbol.
+The project's own comment rules win where they differ from this skill, such as a repo that allows a one-line comment on an external quirk or an invariant the code can't show. Read such an allowance narrowly. First rewrite the code so it carries the fact, and keep the comment only when no rewrite can.
+
+Done when every comment in your change is a module header, a doc block on an exported symbol, or a comment the project's rules call for that no rewrite of the code could replace.
 
 ## Voice
 
