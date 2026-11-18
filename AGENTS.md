@@ -66,7 +66,6 @@ Pick the model from this table by what the work demands most. Use only these mod
 | thoroughness, covering every case | 3 | 3 | 4 |
 | speed, wall clock time to a finished task | 1 | 2 | 3 |
 | cost, per finished task rather than per token | 1 | 2 | 3 |
-| reasoning | `high`, `xhigh` for the hard parts | `high`, `xhigh` for the hard parts | `high`, `xhigh` for the hard parts |
 
 When you spawn reviewers and know which model did the work, at least one reviewer runs on a different provider than that model. Fable and Opus both run on Anthropic, and Sol runs on OpenAI. When you don't know which model did the work, pick reviewers from the table.
 
