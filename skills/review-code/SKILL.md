@@ -29,7 +29,7 @@ Start reviewers with `delegate_task`, all in parallel, each with `role: "review"
 
 Write each check in a reviewer's brief as the behaviour the code must keep, such as "a removed member is no longer on the channel after the job runs", and check access rules through the app's own tests. OpenAI's filter stops a Sol session whose brief reads like an attack.
 
-Reviewers read and run code, leave the working tree as they found it, and leave lint and the full suite to CI. Each finding comes with the run that shows it, such as a failing test or a script and its output. A finding belongs in this review only when it attaches to a line the diff changed.
+Reviewers read and run code, leave the working tree as they found it, and leave lint, the checks and the full suite to CI, reading a PR's CI results instead of running them again. Each finding comes with the run that shows it, such as a failing test or a script and its output. A finding belongs in this review only when it attaches to a line the diff changed.
 
 Done when every reviewer has reported.
 
