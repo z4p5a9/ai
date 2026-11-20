@@ -178,3 +178,7 @@ test "fails with ValidationError code MISSING_SKU when an item has no sku"
 ```
 
 Matching only ValidationError would also pass on a negative price.
+
+## 3. Run the suite
+
+While you change code, run only the tests that cover the change, such as its spec file or one test by name, so each round takes seconds. Run the whole suite once, when the change is done and before you call it done. A project's own rule comes first, such as one that runs the whole suite every time because it is fast.
