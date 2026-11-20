@@ -67,7 +67,7 @@ Pick the model from this table by what the work demands most. Use only these mod
 | speed, wall clock time to a finished task | 1 | 2 | 3 |
 | cost, per finished task rather than per token | 1 | 2 | 3 |
 
-Set each subagent's reasoning effort by how many decisions the task leaves to it and how much they weigh.
+Set each subagent's reasoning effort by how many decisions the task leaves to it and how much they weigh. Claude models take it as the option `effort`, and Codex models as `reasoningEffort`, with the same values.
 
 - `low` is for tasks the brief spells out step by step, with no decisions and no assumptions left to the child, such as renaming a function everywhere it is called or pulling the logs of failed CI checks. The brief tells the child to stop and report anything that doesn't match it.
 - `medium` is for well-scoped tasks with clear boundaries, where the brief makes the main decisions and the rest are minor or easy to infer from the code, such as adding one more of something the project already has several of.
