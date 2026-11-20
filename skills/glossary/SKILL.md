@@ -1,12 +1,13 @@
 ---
 name: glossary
-description: Write, edit, and review terms in a project's GLOSSARY.md.
-disable-model-invocation: true
+description: Question and propose terms in a project's .wiki/GLOSSARY.md. Use when a term's meaning drifts from its entry, when a concept keeps coming up without a clear name, when one concept goes by several names, or whenever the glossary is written, edited, or reviewed.
 ---
 
 # Glossary
 
-The glossary is the shared language between you and me on a project. Each term pins one concept to one word, so we both mean the same thing when we use it. A term says what the concept is and where it ends, and the code stays the source of truth for how it works. It is our internal language, not the words used in external copy, even when the two overlap.
+The glossary is the shared language between you and me on a project, kept in `.wiki/GLOSSARY.md` at the project root. Each term pins one concept to one word, so we both mean the same thing when we use it. A term says what the concept is and where it ends, and the code stays the source of truth for how it works. It is our internal language, not the words used in external copy, even when the two overlap.
+
+You change the glossary only after my yes to the exact entries you showed me. A yes covers those entries as shown, and any change after it comes back to me first.
 
 ## File
 
@@ -37,23 +38,25 @@ _Avoid_: {word}, {word}
 
 The fixed terms open the file, you, I/me, we/us, and the project's own name. The rest follow in clusters of related terms, so each term sits next to the ones it is defined with. A nested term sits directly under its parent. An entry without words to avoid has no `_Avoid_` line.
 
-A project without a glossary gets `GLOSSARY.md` at its root, and this section in its `AGENTS.md`.
+A project without a glossary gets `.wiki/GLOSSARY.md`, and this section in its `AGENTS.md`.
 
 ```md
 ## Glossary
 
-The project keeps a [glossary](./GLOSSARY.md) so we both speak the same language. Read it in full before you start work.
+The project keeps a [glossary](./.wiki/GLOSSARY.md) so we both speak the same language. Read it in full before you start work.
 ```
+
+A project with `GLOSSARY.md` at its root gets a proposal to move it to `.wiki/GLOSSARY.md` and point its `AGENTS.md` section at the new path.
 
 ## Term
 
 A term is a name, a definition, and the words to avoid in its place.
 
-A term is expensive. Both of us carry it in every conversation, every definition that uses it binds to it, and every reread checks it. Be conservative, and add a term only when the concept earns one.
+A term is expensive. Both of us carry it in every conversation, every definition that uses it binds to it, and every reread checks it. Be conservative, and add a term only when the concept earns one. A glossary gets better by losing a term as often as by gaining one, so propose a removal or a merge whenever a term stops earning its place.
 
 ### What earns a term
 
-A term is deep, the way a deep module is. A short word sits over a concept with real depth, and the implementation underneath it can grow and change while the term stays the same. A term names a concept of the domain, and the pieces of the implementation, such as a field, a flag, a file, a helper, or a step inside a process, keep the names the code gives them.
+A term is deep, the way a deep module is. The name and its one sentence of definition are a narrow interface over a concept with real depth, and the implementation underneath can grow and change while the term stays the same. A term names a concept of the domain, and the pieces of the implementation, such as a field, a flag, a file, a helper, or a step inside a process, keep the names the code gives them. A term that only restates its word, or names a piece of the implementation, is shallow, and a shallow term has no place in the glossary.
 
 A concept earns a term when we talk about it often and plain words would name it in several words or name two things with one word, or when another definition needs a word for it. Everything else stays a plain word, used in its ordinary meaning. A word that takes its meaning from its owner, such as a guard's key, stays plain in prose, and becomes a nested term only when the plain word keeps being misread.
 
@@ -83,6 +86,8 @@ _Avoid_: creation time, timestamp
 - Unambiguous, so neither vague nor jargon. Item, list, service, and object name nothing on their own, where record and journal name one thing each.
 - The field's own word where one exists, from its technology, language, or domain. A name someone from the field understands without knowing the project needs less definition.
 - Free. The word isn't already a term, a name in the code for something else, or the field's word for a neighbouring concept.
+
+A rename costs more than an addition, because every doc, definition, and conversation that uses the old word has to follow. Propose one only when the current name misleads, such as when it keeps getting misread or names a neighbouring concept in the field.
 
 | Bad | Good | Why |
 |---|---|---|
@@ -126,23 +131,37 @@ The avoid list holds the words either of us would reach for in place of the name
 | **media**: _Avoid_: song, video, audio, track | **media**: _Avoid_: song, video, audio, track, file, item | File and item are what we actually reach for |
 | fact keeps avoiding record after record became a command | **fact**: _Avoid_: finding, datum, observation | The avoid lists follow the current terms |
 
+## During our work
+
+The glossary stays live while we work, so you question terms as they come up and run the steps below for any change.
+
+- I use a word a term avoids, and mean the term's concept. Use the term in your reply and say nothing about it. The glossary already settled it.
+- A term's meaning drifts from its entry, such as two terms covering one concept, or a use the definition leaves out. Raise it. Quote the entry, name the use that breaks it, and pin the boundary with a concrete case, after checking what the code does.
+- A concept keeps coming up without a clear name, or under several names. Propose a term, or a word for an avoid list, only when it passes What earns a term.
+
+Questions and proposals go in "What I need from you" at the end of the turn, and the work in front of us carries on. Often the answer is that I used a word loosely, and the glossary stays as it is.
+
 ## 1. Read
 
-Read GLOSSARY.md in full, and the code and docs where each concept shows up. For a review, read the code behind every term. Done when you can name each concept's neighbours in the glossary, what the code calls it, if anything, and where it ends.
+Read `.wiki/GLOSSARY.md` in full, and the code and docs where each concept shows up. For a review, read the code behind every term. Done when you can name each concept's neighbours in the glossary, what the code calls it, if anything, and where it ends.
 
 ## 2. Ask
 
-Ask me where a concept's boundary isn't settled by the code or our conversation, such as whether storage means our code or the system it talks to. Ask too about a concept I named that you think doesn't earn a term, and say why. Send every question in one message. Done when every boundary is settled, or there were no questions to ask.
+Ask me where a concept's boundary isn't settled by the code or our conversation, such as whether storage means our code or the system it talks to. Pin each question with a concrete case that falls on the boundary. Ask too about a concept I named that you think doesn't earn a term, and say why. Send every question in one message. Done when every boundary is settled, or there were no questions to ask.
 
-## 3. Write
+## 3. Draft
 
-Write the entries straight into GLOSSARY.md. Write a term after the terms its definition uses. A new term goes in the cluster of the terms it is defined with, a nested term directly under its parent, and an edited one stays where it is.
+Draft every new, changed, and removed entry. Place a term after the terms its definition uses. A new term goes in the cluster of the terms it is defined with, a nested term directly under its parent, and an edited one stays where it is.
 
-## 4. Reread
+Scenario-test the name of every new or renamed term. Pick two or three candidate names, and write the sentences we say about the concept, taken from our work where you can. Include sentences on its boundary, where a wrong name suggests something false, such as a name that implies the thing never changes when it does. Build a table with a row per sentence and a column per candidate, and mark where each candidate reads naturally and where it misleads. Judge the candidates by the rules in Name, with natural in conversation weighed highest.
 
-Reread the whole glossary, not only the entries just written. A review runs 1 and then starts here.
+Done when every entry the change needs is drafted, and every new or renamed term has its scenario test.
 
-- Is every term a deep concept that still earns its place?
+## 4. Recheck
+
+Recheck the whole glossary with the draft applied, not only the drafted entries. A review runs 1 and then starts here.
+
+- Is every term a deep concept that still earns its place, and none shallow?
 - Is every term one lowercase word or kebab-case compound, and every nested term under a parent in the glossary?
 - Is every word in a definition plain or another term?
 - Does any definition use a word another term avoids to mean that term's concept?
@@ -150,8 +169,12 @@ Reread the whole glossary, not only the entries just written. A review runs 1 an
 - Does every rule sit under the term it constrains?
 - Would every definition stay true if the code under it were rewritten?
 
-Fix every finding in GLOSSARY.md. Done when every check passes, or a finding needs a call only I can make.
+Fold every fix into the draft. Done when every check passes, or a finding needs a call only I can make.
 
-## 5. Report
+## 5. Propose
 
-Show me every new, changed, and removed entry in glossary format, with the old entry beside the new one, and every finding left open for me. Leave the commit to me. Done when I have seen every entry you touched.
+Show me every drafted entry in glossary format, with the old entry beside the new one. Under each new term, give its depth in one sentence, meaning what the word hides, and the evidence from our work that it is needed, such as a misreading between us or a long phrase we kept repeating. Under each rename, give the misreading the old name causes. Under each new or renamed term, show its scenario test and why the chosen name won. The table stays out of the glossary. List every finding left open for me. Done when I have seen every entry in the draft, and then wait for my answer.
+
+## 6. Write
+
+Write exactly the entries I said yes to into `.wiki/GLOSSARY.md`. Leave the commit to me. Done when the file holds every approved entry as I saw it, and nothing else changed.
