@@ -67,6 +67,13 @@ Pick the model from this table by what the work demands most. Use only these mod
 | speed, wall clock time to a finished task | 1 | 2 | 3 |
 | cost, per finished task rather than per token | 1 | 2 | 3 |
 
+Set each subagent's reasoning effort by how many decisions the task leaves to it and how much they weigh.
+
+- `low` is for tasks the brief spells out step by step, with no decisions and no assumptions left to the child, such as renaming a function everywhere it is called or pulling the logs of failed CI checks. The brief tells the child to stop and report anything that doesn't match it.
+- `medium` is for well-scoped tasks with clear boundaries, where the brief makes the main decisions and the rest are minor or easy to infer from the code, such as adding one more of something the project already has several of.
+- `high` is the default, for tasks that need judgment calls or are open-ended, reviews included.
+- `xhigh` is for technically hard work and for designing or planning architecture, boundaries, and public surface, because those decisions cost a lot to undo.
+
 When you spawn reviewers and know which model did the work, at least one reviewer runs on a different provider than that model. Fable and Opus both run on Anthropic, and Sol runs on OpenAI. When you don't know which model did the work, pick reviewers from the table.
 
 If a provider flags a prompt, rewrite the prompt and retry on the same model. If a run hits a transient error, wait and retry. Only I change the model. If it still fails, stop and tell me.
