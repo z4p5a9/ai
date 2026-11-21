@@ -1,57 +1,22 @@
 #!/usr/bin/env bash
-# Links my instructions and skills into Claude Code and Codex. Safe to rerun.
-# usage: install <repo>...
-#   The first repo's AGENTS.md becomes the instructions. Every <repo>/skills/<name> becomes a skill.
+# Links this repo's AGENTS.md and skills into Claude Code and Codex. Safe to rerun.
+# usage: install
+#   AGENTS.md becomes the instructions, and every skills/<name> becomes a skill.
 #   Claude Code gets them in ${CLAUDE_CONFIG_DIR:-~/.claude}, Codex in ${CODEX_HOME:-~/.codex}.
+#   It leaves alone any file, and any link into another place, that already holds one of those names, and exits 1 after.
 set -euo pipefail
 
-[ $# -ge 1 ] || { echo "usage: $0 <repo>...   such as $0 ~/.config/ai ~/.config/sona-ai" >&2; exit 2; }
-
+repo=$(cd "$(dirname "$0")" && pwd -P)
 claude_home=${CLAUDE_CONFIG_DIR:-$HOME/.claude}
 codex_home=${CODEX_HOME:-$HOME/.codex}
 status=0
-
-repos=()
-for repo in "$@"; do
-  [ -d "$repo/skills" ] || { echo "install: $repo has no skills folder" >&2; exit 2; }
-  repos+=("$(cd "$repo" && pwd -P)")
-done
-[ -f "${repos[0]}/AGENTS.md" ] || { echo "install: ${repos[0]} has no AGENTS.md" >&2; exit 2; }
-
-skill_names() { # skill_names <repo>: one line per skill folder
-  local dir
-  for dir in "$1"/skills/*/; do
-    if [ -d "$dir" ]; then basename "$dir"; fi
-  done
-}
-
-# Two repos with one skill name would fight over one link, so nothing changes until that is fixed.
-dupes=$(for repo in "${repos[@]}"; do skill_names "$repo"; done | sort | uniq -d)
-if [ -n "$dupes" ]; then
-  for name in $dupes; do
-    echo "install: skill $name is in more than one repo:" >&2
-    for repo in "${repos[@]}"; do
-      if [ -d "$repo/skills/$name" ]; then echo "  $repo/skills/$name" >&2; fi
-    done
-  done
-  exit 1
-fi
-
-points_into_repos() { # points_into_repos <link>
-  local target repo
-  target=$(readlink "$1")
-  for repo in "${repos[@]}"; do
-    case "$target" in "$repo"/*) return 0 ;; esac
-  done
-  return 1
-}
 
 link() { # link <source> <destination>
   local source=$1 destination=$2
   if [ -L "$destination" ]; then
     [ "$(readlink "$destination")" = "$source" ] && return 0
     # A dangling link loses nothing when replaced. A live one into another place is someone else's.
-    if [ -e "$destination" ] && ! points_into_repos "$destination"; then
+    if [ -e "$destination" ] && [[ "$(readlink "$destination")" != "$repo"/* ]]; then
       echo "install: $destination points to $(readlink "$destination"), left as it is" >&2
       status=1
       return 0
@@ -68,18 +33,16 @@ link() { # link <source> <destination>
 for home in "$claude_home" "$codex_home"; do
   mkdir -p "$home/skills"
   if [ "$home" = "$claude_home" ]; then
-    link "${repos[0]}/AGENTS.md" "$home/CLAUDE.md"
+    link "$repo/AGENTS.md" "$home/CLAUDE.md"
   else
-    link "${repos[0]}/AGENTS.md" "$home/AGENTS.md"
+    link "$repo/AGENTS.md" "$home/AGENTS.md"
   fi
-  for repo in "${repos[@]}"; do
-    for name in $(skill_names "$repo"); do
-      link "$repo/skills/$name" "$home/skills/$name"
-    done
+  for dir in "$repo"/skills/*/; do
+    link "${dir%/}" "$home/skills/$(basename "$dir")"
   done
-  # A skill deleted from a repo leaves its link dangling.
+  # A skill deleted from the repo leaves its link dangling.
   for destination in "$home"/skills/*; do
-    if [ -L "$destination" ] && [ ! -e "$destination" ] && points_into_repos "$destination"; then
+    if [ -L "$destination" ] && [ ! -e "$destination" ] && [[ "$(readlink "$destination")" == "$repo"/* ]]; then
       rm "$destination"
       echo "removed $destination"
     fi
