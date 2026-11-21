@@ -7,7 +7,7 @@ description: Principles and taste for building software, from picking the proble
 
 Be ambitious about the problem and ruthless about complexity. Pick the biggest problem worth solving, then solve it completely with the least code that does the whole job.
 
-Each section below is an angle, a question to ask of any code, ours or someone else's, built or only proposed. When building, take them in order. When reviewing or discussing, use whichever angles the code raises.
+Each section below is an angle on any code, ours or someone else's, built or only proposed. When building, take them in order. When reviewing or discussing, use whichever angles the code raises.
 
 ## The goal
 
@@ -43,6 +43,20 @@ Which cases does it handle, and which does it leave? Every solution leaves some.
 - A finding past the line, from a review or a stress test, joins the known defects, and the work moves on. The work is done when it meets the line, not when the findings run out.
 - When three fixes in a row patch one mechanism, stop and bring it to the user. The mechanism is wrong, or the line is.
 - The known defects ship with the work, in the report to the user.
+
+## Impossible by design
+
+Invalid states are impossible by design, not by convention. When values only make sense together, the type, table, or signature that holds them accepts only the combinations that mean something, so no caller or reader has to know the rule. A rule kept in a comment, a naming habit, or each caller's memory is a convention, and it breaks the first time someone doesn't know it. A check that the values agree is a convention too, because every path that builds them has to remember to run it. Make invalid states unrepresentable, and the checks and the branches for impossible cases go away with them.
+
+- State that moves through stages is a union, one variant per stage, each carrying only its own fields. `{ status: "failed", error } | { status: "done", data }` over `{ status, data?, error? }`, where a done result with an error set means nothing.
+- A function's parameters list its valid cases. `get({ id } | { slug })` over `get(id?, slug?)`, which accepts both and neither.
+- When a function's inputs work only in certain combinations, the combinations become one union argument. `charge(customer, options)` works only if `options.method: "card"` comes with `customer.cardToken`, and `"invoice"` comes with `customer.billingEmail` and `options.dueDays`. `charge(customer, payment)` with `payment: { method: "card", cardToken } | { method: "invoice", billingEmail, dueDays }` accepts only calls that work. The customer keeps the fields every charge uses.
+- Config that turns on a feature carries that feature's settings inside it. `tls: { cert, key } | undefined` over `tls: boolean` with `cert?` and `key?` beside it.
+- A feature that attaches to several kinds of record gets its own parent table, and every row of the feature points at it with one non-null foreign key. Acknowledgements on posts and messages hang off `acknowledgement_subjects`, and each kind of record joins it through its own link table, `acknowledgement_posts` and `acknowledgement_messages`. The link's primary key on the record and a unique key on the subject make each link one to one. The subject stores its `kind`, and each link table's foreign key includes `kind` fixed to its own value, so a post's link can only reach a post's subject and no subject belongs to a post and a message at once.
+- One fact lives in one place. A stored `count` beside the list it counts drifts from it, so compute it.
+- A rule the types or the schema can't express, such as `start` before `end`, lives in one constructor or one CHECK constraint, and every value goes through it.
+
+Done when every rule that ties values together lives in a type, a table's keys and constraints, or one constructor.
 
 ## Trust
 
